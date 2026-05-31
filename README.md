@@ -1,53 +1,181 @@
-# plataforma-seguridadeventos
+# Plataforma Seguridad Eventos
 
-1- Crea un Entorno Virtual
-Cuando empiezas a trabajar en un proyecto de Python por primera vez, crea un entorno virtual dentro de tu proyecto.
-Solo necesitas hacer esto una vez por proyecto, no cada vez que trabajas.
-Linux
+## Requisitos
+
+* Python 3.10 o superior
+* Git
+* Pip
+
+---
+
+## 1. Crear un entorno virtual
+
+### Linux / macOS
+
+```bash
 python -m venv .venv
+```
 
-Windows PowerShell
-.venv\Scripts\Activate.ps1
+### Windows (PowerShell)
 
-2- Activa el Entorno Virtual
-Activa el nuevo entorno virtual para que cualquier comando de Python que ejecutes o paquete que instales lo utilicen.
-Linux
+```powershell
+python -m venv .venv
+```
+
+---
+
+## 2. Activar el entorno virtual
+
+### Linux / macOS
+
+```bash
 source .venv/bin/activate
+```
 
-Windows PowerShell
+### Windows (PowerShell)
+
+```powershell
 .venv\Scripts\Activate.ps1
+```
 
-3-Revisa que el Entorno Virtual esté Activo
-Revisa que el entorno virtual esté activo (el comando anterior funcionó).
-Linux
+---
+
+## 3. Verificar que el entorno está activo
+
+### Linux / macOS
+
+```bash
 which python
+```
 
-Windows PowerShell
+### Windows (PowerShell)
+
+```powershell
 Get-Command python
+```
 
-Si muestra el binario de python en .venv\Scripts\python, dentro de tu proyecto (en este caso awesome-project), entonces funcionó. 🎉
+Si la ruta apunta a `.venv`, el entorno virtual está funcionando correctamente.
 
-4-Actualiza pip
-Normalmente harías esto una vez, justo después de crear el entorno virtual.
-Asegúrate de que el entorno virtual esté activo (con el comando anterior) y luego ejecuta:
-Bash
+---
+
+## 4. Actualizar pip
+
+```bash
 python -m pip install --upgrade pip
+```
 
-A veces, podrías obtener un error No module named pip al intentar actualizar pip.
-Si esto pasa, instala y actualiza pip usando el siguiente comando:
-Bash
+Si aparece el error `No module named pip`, ejecuta:
+
+```bash
 python -m ensurepip --upgrade
+```
 
-5-Añade .gitignore
-Si estás usando Git (deberías), añade un archivo .gitignore para excluir todo en tu .venv de Git.
-Bash
-echo "*" > .venv/.gitignore
+---
 
-6-Instala Paquetes
-Después de activar el entorno, puedes instalar paquetes en él.
-Bash
+## 5. Configurar Git
+
+Agrega el entorno virtual al archivo `.gitignore`:
+
+```gitignore
+.venv/
+```
+
+---
+
+## 6. Instalar dependencias
+
+### Instalar FastAPI y dependencias recomendadas
+
+```bash
 pip install "fastapi[standard]"
+```
 
-7-Ejecuta Tu Programa
-Bash
-python main.py
+### Instalar dependencias desde requirements.txt
+
+```bash
+pip install -r requirements.txt
+```
+
+### Generar o actualizar requirements.txt
+
+```bash
+pip freeze > requirements.txt
+```
+
+---
+
+## 7. Ejecutar la aplicación FastAPI
+
+### Opción 1: FastAPI CLI (recomendado)
+
+```bash
+fastapi dev main.py
+```
+
+### Opción 2: Uvicorn
+
+Si tu aplicación está definida como:
+
+```python
+app = FastAPI()
+```
+
+en el archivo `main.py`, ejecuta:
+
+```bash
+uvicorn main:app --reload
+```
+
+---
+
+## 8. Acceder a la aplicación
+
+Una vez iniciado el servidor, podrás acceder a:
+
+| Recurso    | URL                         |
+| ---------- | --------------------------- |
+| API        | http://127.0.0.1:8000       |
+| Swagger UI | http://127.0.0.1:8000/docs  |
+| ReDoc      | http://127.0.0.1:8000/redoc |
+
+---
+
+## 9. Estructura del proyecto
+
+```text
+plataforma-seguridadeventos/
+│
+├── .venv/
+├── main.py
+├── requirements.txt
+├── .gitignore
+└── README.md
+```
+
+---
+
+## Comandos útiles
+
+### Desactivar el entorno virtual
+
+```bash
+deactivate
+```
+
+### Ver paquetes instalados
+
+```bash
+pip list
+```
+
+### Actualizar dependencias
+
+```bash
+pip install --upgrade -r requirements.txt
+```
+
+### Ejecutar pruebas (si existen)
+
+```bash
+pytest
+```
