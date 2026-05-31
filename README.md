@@ -179,7 +179,3 @@ pip install --upgrade -r requirements.txt
 ```bash
 pytest
 ```
-
-
-
-Doc FastApi https://fastapi.tiangolo.com/es/virtual-environments/#create-a-virtual-environment
