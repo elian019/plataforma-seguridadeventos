@@ -25,6 +25,8 @@ from app.schemas.schemas import (
     UsuarioRolCreate, UsuarioRolOut,
 )
 
+from app.core.security import hash_password
+
 router = APIRouter()
 
 
@@ -465,7 +467,9 @@ def crear_usuario(data: UsuarioCreate, db: Session = Depends(get_db)):
     existente = db.query(Usuario).filter(Usuario.correo == data.correo).first()
     if existente:
         raise HTTPException(status_code=400, detail="El correo ya está registrado")
-    obj = Usuario(**data.model_dump())
+    data_dict = data.model_dump()
+    data_dict["contrasena"] = hash_password(data_dict["contrasena"])
+    obj = Usuario(**data_dict)
     db.add(obj); db.commit(); db.refresh(obj)
     return obj
 
