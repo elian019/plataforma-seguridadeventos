@@ -1,4 +1,4 @@
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel, EmailStr, Field
 from typing import Optional
 from datetime import datetime
 
@@ -7,14 +7,14 @@ from datetime import datetime
 # UBICACION
 # ─────────────────────────────────────────
 class UbicacionBase(BaseModel):
-    direccion: Optional[str] = None
-    zona: Optional[str] = None
-    latitud: Optional[float] = None
-    longitud: Optional[float] = None
-    referencia: Optional[str] = None
+    direccion: Optional[str] = Field(None, max_length=255)
+    zona: Optional[str] = Field(None, max_length=100)
+    latitud: Optional[float] = Field(None, ge=-90, le=90)
+    longitud: Optional[float] = Field(None, ge=-180, le=180)
+    referencia: Optional[str] = Field(None, max_length=255)
 
 class UbicacionCreate(UbicacionBase):
-    pass
+    direccion: str = Field(..., min_length=1, max_length=255)
 
 class UbicacionUpdate(UbicacionBase):
     pass
@@ -29,16 +29,16 @@ class UbicacionOut(UbicacionBase):
 # EMPRESA_SEGURIDAD
 # ─────────────────────────────────────────
 class EmpresaBase(BaseModel):
-    nombre_empresa: str
-    direccion: Optional[str] = None
-    telefono: Optional[str] = None
-    email: Optional[str] = None
+    nombre_empresa: str = Field(..., min_length=1, max_length=255)
+    direccion: Optional[str] = Field(None, max_length=255)
+    telefono: Optional[str] = Field(None, max_length=50)
+    email: Optional[EmailStr] = None
 
 class EmpresaCreate(EmpresaBase):
     pass
 
 class EmpresaUpdate(EmpresaBase):
-    nombre_empresa: Optional[str] = None
+    nombre_empresa: Optional[str] = Field(None, min_length=1, max_length=255)
 
 class EmpresaOut(EmpresaBase):
     id_empresa: int
@@ -50,16 +50,16 @@ class EmpresaOut(EmpresaBase):
 # CENTRO_MONITOREO
 # ─────────────────────────────────────────
 class CentroBase(BaseModel):
-    nombre: str
-    direccion: Optional[str] = None
-    telefono: Optional[str] = None
-    id_empresa: Optional[int] = None
+    nombre: str = Field(..., min_length=1, max_length=255)
+    direccion: Optional[str] = Field(None, max_length=255)
+    telefono: Optional[str] = Field(None, max_length=50)
+    id_empresa: Optional[int] = Field(None, gt=0)
 
 class CentroCreate(CentroBase):
     pass
 
 class CentroUpdate(CentroBase):
-    nombre: Optional[str] = None
+    nombre: Optional[str] = Field(None, min_length=1, max_length=255)
 
 class CentroOut(CentroBase):
     id_centro: int
@@ -71,16 +71,16 @@ class CentroOut(CentroBase):
 # DISPOSITIVO
 # ─────────────────────────────────────────
 class DispositivoBase(BaseModel):
-    nombre_dispositivo: str
-    tipo_dispositivo: Optional[str] = None
-    estado: Optional[str] = None
-    id_ubicacion: Optional[int] = None
+    nombre_dispositivo: str = Field(..., min_length=1, max_length=255)
+    tipo_dispositivo: Optional[str] = Field(None, max_length=100)
+    estado: Optional[str] = Field(None, max_length=50)
+    id_ubicacion: Optional[int] = Field(None, gt=0)
 
 class DispositivoCreate(DispositivoBase):
     pass
 
 class DispositivoUpdate(DispositivoBase):
-    nombre_dispositivo: Optional[str] = None
+    nombre_dispositivo: Optional[str] = Field(None, min_length=1, max_length=255)
 
 class DispositivoOut(DispositivoBase):
     id_dispositivo: int
@@ -92,15 +92,15 @@ class DispositivoOut(DispositivoBase):
 # NIVEL_RIESGO
 # ─────────────────────────────────────────
 class NivelRiesgoBase(BaseModel):
-    nivel: str
-    puntaje: Optional[int] = None
+    nivel: str = Field(..., min_length=1, max_length=100)
+    puntaje: Optional[int] = Field(None, ge=0)
     descripcion: Optional[str] = None
 
 class NivelRiesgoCreate(NivelRiesgoBase):
     pass
 
 class NivelRiesgoUpdate(NivelRiesgoBase):
-    nivel: Optional[str] = None
+    nivel: Optional[str] = Field(None, min_length=1, max_length=100)
 
 class NivelRiesgoOut(NivelRiesgoBase):
     id_nivel_riesgo: int
@@ -112,14 +112,14 @@ class NivelRiesgoOut(NivelRiesgoBase):
 # TIPO_EVENTO
 # ─────────────────────────────────────────
 class TipoEventoBase(BaseModel):
-    nombre: str
+    nombre: str = Field(..., min_length=1, max_length=150)
     descripcion: Optional[str] = None
 
 class TipoEventoCreate(TipoEventoBase):
     pass
 
 class TipoEventoUpdate(TipoEventoBase):
-    nombre: Optional[str] = None
+    nombre: Optional[str] = Field(None, min_length=1, max_length=150)
 
 class TipoEventoOut(TipoEventoBase):
     id_tipo_evento: int
@@ -131,15 +131,15 @@ class TipoEventoOut(TipoEventoBase):
 # FUENTE_EVENTO
 # ─────────────────────────────────────────
 class FuenteEventoBase(BaseModel):
-    nombre_fuente: str
-    tipo_fuente: Optional[str] = None
+    nombre_fuente: str = Field(..., min_length=1, max_length=255)
+    tipo_fuente: Optional[str] = Field(None, max_length=100)
     descripcion: Optional[str] = None
 
 class FuenteEventoCreate(FuenteEventoBase):
     pass
 
 class FuenteEventoUpdate(FuenteEventoBase):
-    nombre_fuente: Optional[str] = None
+    nombre_fuente: Optional[str] = Field(None, min_length=1, max_length=255)
 
 class FuenteEventoOut(FuenteEventoBase):
     id_fuente_evento: int
@@ -153,16 +153,20 @@ class FuenteEventoOut(FuenteEventoBase):
 class EventoBase(BaseModel):
     fecha_hora: Optional[datetime] = None
     descripcion: Optional[str] = None
-    estado: Optional[str] = None
-    id_tipo_evento: Optional[int] = None
-    id_dispositivo: Optional[int] = None
-    id_nivel_riesgo: Optional[int] = None
-    id_centro: Optional[int] = None
-    id_fuente_evento: Optional[int] = None
-    id_ubicacion: Optional[int] = None
+    estado: Optional[str] = Field(None, max_length=50)
+    id_tipo_evento: Optional[int] = Field(None, gt=0)
+    id_dispositivo: Optional[int] = Field(None, gt=0)
+    id_nivel_riesgo: Optional[int] = Field(None, gt=0)
+    id_centro: Optional[int] = Field(None, gt=0)
+    id_fuente_evento: Optional[int] = Field(None, gt=0)
+    id_ubicacion: Optional[int] = Field(None, gt=0)
 
 class EventoCreate(EventoBase):
-    pass
+    descripcion: str = Field(..., min_length=1)
+    estado: str = Field(..., min_length=1, max_length=50)
+    id_tipo_evento: int = Field(..., gt=0)
+    id_nivel_riesgo: int = Field(..., gt=0)
+    id_ubicacion: int = Field(..., gt=0)
 
 class EventoUpdate(EventoBase):
     pass
@@ -178,14 +182,15 @@ class EventoOut(EventoBase):
 # ─────────────────────────────────────────
 class AuditoriaBase(BaseModel):
     fecha_hora: Optional[datetime] = None
-    accion: Optional[str] = None
+    accion: Optional[str] = Field(None, max_length=100)
     descripcion: Optional[str] = None
-    ip_usuario: Optional[str] = None
-    id_usuario: Optional[int] = None
-    id_evento: Optional[int] = None
+    ip_usuario: Optional[str] = Field(None, max_length=50)
+    id_usuario: Optional[int] = Field(None, gt=0)
+    id_evento: Optional[int] = Field(None, gt=0)
 
 class AuditoriaCreate(AuditoriaBase):
-    pass
+    accion: str = Field(..., min_length=1, max_length=100)
+    id_usuario: int = Field(..., gt=0)
 
 class AuditoriaOut(AuditoriaBase):
     id_auditoria: int
@@ -197,14 +202,14 @@ class AuditoriaOut(AuditoriaBase):
 # ROL
 # ─────────────────────────────────────────
 class RolBase(BaseModel):
-    nombre_rol: str
+    nombre_rol: str = Field(..., min_length=1, max_length=150)
     descripcion: Optional[str] = None
 
 class RolCreate(RolBase):
     pass
 
 class RolUpdate(RolBase):
-    nombre_rol: Optional[str] = None
+    nombre_rol: Optional[str] = Field(None, min_length=1, max_length=150)
 
 class RolOut(RolBase):
     id_rol: int
@@ -216,14 +221,14 @@ class RolOut(RolBase):
 # PERMISO
 # ─────────────────────────────────────────
 class PermisoBase(BaseModel):
-    nombre_permiso: str
+    nombre_permiso: str = Field(..., min_length=1, max_length=150)
     descripcion: Optional[str] = None
 
 class PermisoCreate(PermisoBase):
     pass
 
 class PermisoUpdate(PermisoBase):
-    nombre_permiso: Optional[str] = None
+    nombre_permiso: Optional[str] = Field(None, min_length=1, max_length=150)
 
 class PermisoOut(PermisoBase):
     id_permiso: int
@@ -235,8 +240,8 @@ class PermisoOut(PermisoBase):
 # ROL_PERMISO
 # ─────────────────────────────────────────
 class RolPermisoBase(BaseModel):
-    id_rol: int
-    id_permiso: int
+    id_rol: int = Field(..., gt=0)
+    id_permiso: int = Field(..., gt=0)
 
 class RolPermisoCreate(RolPermisoBase):
     pass
@@ -251,18 +256,18 @@ class RolPermisoOut(RolPermisoBase):
 # USUARIO
 # ─────────────────────────────────────────
 class UsuarioBase(BaseModel):
-    nombre: str
-    apellido: Optional[str] = None
-    correo: str
-    estado: Optional[str] = None
+    nombre: str = Field(..., min_length=1, max_length=150)
+    apellido: Optional[str] = Field(None, max_length=150)
+    correo: EmailStr
+    estado: Optional[str] = Field(None, max_length=50)
 
 class UsuarioCreate(UsuarioBase):
-    contrasena: str
+    contrasena: str = Field(..., min_length=8, max_length=72)
 
 class UsuarioUpdate(UsuarioBase):
-    nombre: Optional[str] = None
-    correo: Optional[str] = None
-    contrasena: Optional[str] = None
+    nombre: Optional[str] = Field(None, min_length=1, max_length=150)
+    correo: Optional[EmailStr] = None
+    contrasena: Optional[str] = Field(None, min_length=8, max_length=72)
 
 class UsuarioOut(UsuarioBase):
     id_usuario: int
@@ -275,9 +280,9 @@ class UsuarioOut(UsuarioBase):
 # USUARIO_ROL
 # ─────────────────────────────────────────
 class UsuarioRolBase(BaseModel):
-    id_usuario: int
-    id_rol: int
-    id_evento: Optional[int] = None
+    id_usuario: int = Field(..., gt=0)
+    id_rol: int = Field(..., gt=0)
+    id_evento: Optional[int] = Field(None, gt=0)
 
 class UsuarioRolCreate(UsuarioRolBase):
     pass

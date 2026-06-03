@@ -1,10 +1,5 @@
 from fastapi import FastAPI
-from app.db.database import engine
-from app.models.models import Base
 from app.api.v1.controllers import router
-
-# Crea todas las tablas en la BD si no existen
-Base.metadata.create_all(bind=engine)
 
 app = FastAPI(
     title="Sistema de Seguridad - API",

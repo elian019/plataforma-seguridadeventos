@@ -106,10 +106,16 @@ pip freeze > requirements.txt
 
 ## 7. Ejecutar la aplicación FastAPI
 
+Antes de levantar el servidor, aplica las migraciones:
+
+```bash
+alembic upgrade head
+```
+
 ### Opción 1: FastAPI CLI (recomendado)
 
 ```bash
-fastapi dev main.py
+fastapi dev app/main.py
 ```
 
 ### Opción 2: Uvicorn
@@ -120,11 +126,15 @@ Si tu aplicación está definida como:
 app = FastAPI()
 ```
 
-en el archivo `main.py`, ejecuta:
+en el archivo `app/main.py`, ejecuta:
 
 ```bash
-uvicorn main:app --reload
+uvicorn app.main:app --reload
 ```
+
+La primera creación de usuario se puede hacer sin credenciales. Después de eso,
+las rutas bajo `/api/v1` requieren autenticación HTTP Basic usando `correo` y
+`contrasena`.
 
 ---
 
