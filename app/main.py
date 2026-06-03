@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from app.api.v1.controllers import router
+from app.api.v1.router import router
 
 app = FastAPI(
     title="Sistema de Seguridad - API",
