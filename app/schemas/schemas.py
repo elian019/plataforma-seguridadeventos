@@ -276,6 +276,17 @@ class UsuarioOut(UsuarioBase):
         from_attributes = True
 
 
+class LoginRequest(BaseModel):
+    correo: EmailStr
+    contrasena: str = Field(..., min_length=1, max_length=72)
+
+
+class TokenOut(BaseModel):
+    access_token: str
+    token_type: str = "bearer"
+    expires_in: int
+
+
 # ─────────────────────────────────────────
 # USUARIO_ROL
 # ─────────────────────────────────────────

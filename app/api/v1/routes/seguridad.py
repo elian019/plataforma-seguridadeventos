@@ -1,11 +1,14 @@
 from typing import List
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
+from app.core.config import settings
+from app.core.security import create_access_token, verify_password
 from app.db.database import get_db
 from app.models.models import Permiso, Rol, RolPermiso, Usuario, UsuarioRol
 from app.schemas.schemas import (
+    LoginRequest,
     PermisoCreate,
     PermisoOut,
     PermisoUpdate,
@@ -19,6 +22,7 @@ from app.schemas.schemas import (
     UsuarioRolCreate,
     UsuarioRolOut,
     UsuarioUpdate,
+    TokenOut,
 )
 from app.services.crud import actualizar, crear, eliminar, listar_paginado, listar_todos, obtener_o_404
 from app.services.validators import (
@@ -30,7 +34,31 @@ from app.services.validators import (
 )
 
 
+auth_router = APIRouter(prefix="/auth", tags=["Auth"])
 router = APIRouter()
+
+
+@auth_router.post("/login", response_model=TokenOut)
+def login(data: LoginRequest, db: Session = Depends(get_db)):
+    usuario = db.query(Usuario).filter(Usuario.correo == data.correo).first()
+    if usuario is None or not verify_password(data.contrasena, usuario.contrasena):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Credenciales invalidas",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+
+    if usuario.estado and usuario.estado.lower() in {"inactivo", "bloqueado", "suspendido"}:
+        raise HTTPException(status_code=403, detail="Usuario inactivo o bloqueado")
+
+    access_token = create_access_token(
+        subject=str(usuario.id_usuario),
+        extra_claims={"correo": usuario.correo},
+    )
+    return TokenOut(
+        access_token=access_token,
+        expires_in=settings.JWT_ACCESS_TOKEN_EXPIRE_MINUTES * 60,
+    )
 
 
 @router.post("/roles/", response_model=RolOut, status_code=201, tags=["Rol"])

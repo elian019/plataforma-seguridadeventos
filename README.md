@@ -133,8 +133,22 @@ uvicorn app.main:app --reload
 ```
 
 La primera creación de usuario se puede hacer sin credenciales. Después de eso,
-las rutas bajo `/api/v1` requieren autenticación HTTP Basic usando `correo` y
-`contrasena`.
+las rutas bajo `/api/v1` requieren autenticación JWT.
+
+Para obtener un token:
+
+```bash
+curl -X POST http://127.0.0.1:8000/api/v1/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"correo":"admin@example.com","contrasena":"tu-contrasena"}'
+```
+
+Usa el token devuelto en las siguientes peticiones:
+
+```bash
+curl http://127.0.0.1:8000/api/v1/usuarios/ \
+  -H "Authorization: Bearer <access_token>"
+```
 
 ---
 

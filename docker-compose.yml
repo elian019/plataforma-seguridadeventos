@@ -22,6 +22,9 @@ services:
     container_name: pse-api
     environment:
       DATABASE_URL: postgresql+psycopg://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@db:5432/${POSTGRES_DB:-pse}
+      JWT_SECRET_KEY: ${JWT_SECRET_KEY:-cambia-esta-clave-jwt-en-produccion}
+      JWT_ALGORITHM: ${JWT_ALGORITHM:-HS256}
+      JWT_ACCESS_TOKEN_EXPIRE_MINUTES: ${JWT_ACCESS_TOKEN_EXPIRE_MINUTES:-60}
     ports:
       - "${API_PORT:-8000}:8000"
     depends_on:
