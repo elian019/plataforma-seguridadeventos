@@ -22,6 +22,9 @@ dist/
 # Logs
 *.log
 
+# Backups de base de datos generados por Docker
+backups/
+
 # Variables de entorno
 .env
 .env.*
@@ -67,4 +70,3 @@ uvicorn.log
 
 # Archivos de configuración local
 .local/
-

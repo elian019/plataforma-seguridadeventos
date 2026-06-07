@@ -20,6 +20,7 @@ htmlcov
 *.db
 *.sqlite
 *.sqlite3
+backups
 
 Dockerfile
 docker-compose.yml

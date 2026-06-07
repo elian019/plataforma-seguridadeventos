@@ -29,5 +29,29 @@ services:
         condition: service_healthy
     restart: unless-stopped
 
+  db-backup:
+    image: postgres:16-alpine
+    container_name: pse-db-backup
+    environment:
+      POSTGRES_HOST: db
+      POSTGRES_PORT: 5432
+      POSTGRES_DB: ${POSTGRES_DB:-pse}
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      BACKUP_DIR: /backups
+      BACKUP_RETENTION_DAYS: ${BACKUP_RETENTION_DAYS:-7}
+      BACKUP_TIME: ${BACKUP_TIME:-03:00}
+      BACKUP_RUN_ON_STARTUP: ${BACKUP_RUN_ON_STARTUP:-false}
+    volumes:
+      - ./backups:/backups
+      - ./docker/db-backup.sh:/usr/local/bin/db-backup.sh:ro
+      - ./docker/backup-scheduler.sh:/usr/local/bin/backup-scheduler.sh:ro
+      - /etc/localtime:/etc/localtime:ro
+    depends_on:
+      db:
+        condition: service_healthy
+    command: ["sh", "/usr/local/bin/backup-scheduler.sh"]
+    restart: unless-stopped
+
 volumes:
   postgres_data:
