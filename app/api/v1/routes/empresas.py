@@ -5,7 +5,7 @@ from sqlalchemy.orm import Session
 
 from app.db.database import get_db
 from app.models.models import EmpresaSeguridad
-from app.schemas.schemas import EmpresaCreate, EmpresaOut, EmpresaUpdate
+from app.dtos import EmpresaCreate, EmpresaOut, EmpresaUpdate
 from app.services.crud import actualizar, crear, eliminar, listar_paginado, obtener_o_404
 
 

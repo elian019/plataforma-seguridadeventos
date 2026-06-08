@@ -7,7 +7,7 @@ from app.core.config import settings
 from app.core.security import create_access_token, verify_password
 from app.db.database import get_db
 from app.models.models import Permiso, Rol, RolPermiso, Usuario, UsuarioRol
-from app.schemas.schemas import (
+from app.dtos import (
     LoginRequest,
     PermisoCreate,
     PermisoOut,

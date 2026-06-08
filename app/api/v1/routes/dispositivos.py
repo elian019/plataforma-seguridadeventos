@@ -5,7 +5,7 @@ from sqlalchemy.orm import Session
 
 from app.db.database import get_db
 from app.models.models import Dispositivo
-from app.schemas.schemas import DispositivoCreate, DispositivoOut, DispositivoUpdate
+from app.dtos import DispositivoCreate, DispositivoOut, DispositivoUpdate
 from app.services.crud import actualizar, crear, eliminar, listar_paginado, obtener_o_404
 from app.services.validators import validar_referencias
 

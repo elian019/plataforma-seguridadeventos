@@ -5,7 +5,7 @@ from sqlalchemy.orm import Session
 
 from app.db.database import get_db
 from app.models.models import FuenteEvento, NivelRiesgo, TipoEvento
-from app.schemas.schemas import (
+from app.dtos import (
     FuenteEventoCreate,
     FuenteEventoOut,
     FuenteEventoUpdate,

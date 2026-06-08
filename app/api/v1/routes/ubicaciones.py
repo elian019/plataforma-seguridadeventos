@@ -5,7 +5,7 @@ from sqlalchemy.orm import Session
 
 from app.db.database import get_db
 from app.models.models import Ubicacion
-from app.schemas.schemas import UbicacionCreate, UbicacionOut, UbicacionUpdate
+from app.dtos import UbicacionCreate, UbicacionOut, UbicacionUpdate
 from app.services.crud import actualizar, crear, eliminar, listar_paginado, obtener_o_404
 
 

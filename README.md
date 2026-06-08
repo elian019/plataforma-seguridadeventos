@@ -178,6 +178,19 @@ plataforma-seguridadeventos/
 
 ---
 
+### DTOs
+
+Los modelos Pydantic usados por la API estan en `app/dtos/`. Las rutas importan
+desde esa capa para separar los datos de entrada y salida de los modelos SQLAlchemy.
+
+Convencion usada:
+
+* `Create`: datos requeridos para crear un recurso.
+* `Update`: datos opcionales para modificar un recurso.
+* `Out`: datos devueltos por la API.
+
+---
+
 ## Comandos útiles
 
 ### Desactivar el entorno virtual
