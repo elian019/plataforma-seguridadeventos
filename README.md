@@ -164,6 +164,34 @@ Una vez iniciado el servidor, podrás acceder a:
 
 ---
 
+## PostGIS
+
+El servicio `db` usa una imagen con PostGIS:
+
+```yaml
+postgis/postgis:16-3.5-alpine
+```
+
+Al iniciar la API se ejecuta `alembic upgrade head`, que habilita la extension
+`postgis` y agrega columnas espaciales calculadas sobre `ubicacion`:
+
+* `geom`: `geometry(Point, 4326)`, util para mapas y consultas geometricas.
+* `geog`: `geography(Point, 4326)`, util para radios y distancias en metros.
+
+La API conserva `latitud` y `longitud`. PostGIS se actualiza automaticamente a
+partir de esos campos.
+
+Ejemplo de consulta por radio:
+
+```bash
+curl "http://127.0.0.1:8000/api/v1/ubicaciones/cercanas/?latitud=-25.2637&longitud=-57.5759&radio_metros=1000" \
+  -H "Authorization: Bearer <access_token>"
+```
+
+La respuesta incluye `distancia_metros` y viene ordenada por cercania.
+
+---
+
 ## 9. Estructura del proyecto
 
 ```text

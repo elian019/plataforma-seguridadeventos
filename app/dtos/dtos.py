@@ -25,6 +25,10 @@ class UbicacionOut(UbicacionBase):
         from_attributes = True
 
 
+class UbicacionConDistanciaOut(UbicacionOut):
+    distancia_metros: float
+
+
 # ─────────────────────────────────────────
 # EMPRESA_SEGURIDAD
 # ─────────────────────────────────────────
@@ -350,6 +354,7 @@ __all__ = [
     "TipoEventoUpdate",
     "TokenOut",
     "UbicacionBase",
+    "UbicacionConDistanciaOut",
     "UbicacionCreate",
     "UbicacionOut",
     "UbicacionUpdate",

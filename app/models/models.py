@@ -1,6 +1,7 @@
 from sqlalchemy import (
-    Column, Integer, String, Float, DateTime, ForeignKey, Text
+    Column, Computed, Integer, String, Float, DateTime, ForeignKey, Text
 )
+from geoalchemy2 import Geography, Geometry
 from sqlalchemy.orm import relationship, declarative_base
 from datetime import datetime
 
@@ -15,6 +16,22 @@ class Ubicacion(Base):
     zona = Column(String(100))
     latitud = Column(Float)
     longitud = Column(Float)
+    geom = Column(
+        Geometry(geometry_type="POINT", srid=4326, spatial_index=False),
+        Computed(
+            "CASE WHEN latitud IS NULL OR longitud IS NULL "
+            "THEN NULL ELSE ST_SetSRID(ST_MakePoint(longitud, latitud), 4326) END",
+            persisted=True,
+        ),
+    )
+    geog = Column(
+        Geography(geometry_type="POINT", srid=4326, spatial_index=False),
+        Computed(
+            "CASE WHEN latitud IS NULL OR longitud IS NULL "
+            "THEN NULL ELSE ST_SetSRID(ST_MakePoint(longitud, latitud), 4326)::geography END",
+            persisted=True,
+        ),
+    )
     referencia = Column(String(255))
 
     dispositivos = relationship("Dispositivo", back_populates="ubicacion")
